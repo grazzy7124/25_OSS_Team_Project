@@ -1,5 +1,7 @@
 
-export default function Login() {
+
+
+const Login = ()=> {
     return (
         <>
             <div className="container">
@@ -14,7 +16,8 @@ export default function Login() {
                 </div>
             </div>
             
-
         </>
     );
-}
+};
+
+export default Login;

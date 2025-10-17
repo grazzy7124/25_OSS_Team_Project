@@ -13,7 +13,7 @@ const Main = ({medicines = [], handleEdit, handleDelete}) => {
                     <div className="col-9">
                         <input placeholder="검색"/>
                         <button>
-                            <i className="fas fa-bell" ></i>
+                            <i className="fas fa-bell"></i>
                         </button>
                     </div>
                 </div>
