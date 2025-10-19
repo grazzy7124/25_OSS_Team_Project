@@ -55,7 +55,7 @@ const Main = () => {
               <div className="">
                 <button 
                   className="btn btn-outline-secondary ms-2"
-                  onClick={()=>navigate('/add', {state:item})}
+                  onClick={()=>navigate('/add')}
                 >
                   Add
                 </button>
