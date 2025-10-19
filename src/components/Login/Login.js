@@ -1,20 +1,31 @@
+import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
+const Login = ()=> {
+    const navigate = useNavigate();
+
     return (
+        
         <>
-            <div className="container">
+            <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
+                <h2 className="text-center mb-3">Login</h2>
                 <div>
-                    <input placeholder="email"></input>
+                    <input className='form-control mb-2' placeholder="email"></input>
                 </div>
                 <div>
-                    <input placeholder="password"></input>
+                    <input className='form-control mb-3' placeholder="password"></input>
                 </div>
                 <div>
-                    <a href="../" className="btn btn-dark">Submit</a>
+                    <button 
+                        className='btn btn-primary'
+                        onClick={() => navigate('/main')}
+                    >
+                        Submit
+                    </button>
                 </div>
             </div>
             
-
         </>
     );
-}
+};
+
+export default Login;

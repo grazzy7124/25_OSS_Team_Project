@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Main = () => {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const API_URL = "https://68db33b023ebc87faa324066.mockapi.io/OSS_teamproject";
 
@@ -20,6 +22,10 @@ const Main = () => {
         setLoading(false);
       });
   }, []);
+
+  const confirmDelete = ()=> {
+    alert('정말 삭제하시겠습니까?');
+  }
 
   const filtered = medicines.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
@@ -45,6 +51,14 @@ const Main = () => {
               <button className="btn btn-outline-secondary ms-2">
                  <i className="fas fa-sign-in-alt"></i> Login
               </button>
+              <div className="">
+                <button 
+                  className="btn btn-outline-secondary ms-2"
+                  onClick={()=>navigate('/add')}
+                >
+                  Add
+                </button>
+              </div>
             </div>
           </div>
 
@@ -54,15 +68,41 @@ const Main = () => {
                 key={item.id}
                 className="col-12 col-md-6 col-lg-3 mb-4"
               >
-                <div className="ratio ratio-16x9">
-                  <iframe
-                    src={item.videoUrl}
-                    title={item.name}
-                    allowFullScreen
-                  ></iframe>
+                <div className="component">
+                  <div className="ratio ratio-16x9">
+                    <iframe
+                      src={item.videoUrl}
+                      title={item.name}
+                      allowFullScreen
+                    ></iframe>
+                  </div >
+                  <div className="d-flex justify-content-between">
+                    <p className="mt-2 fw-bold">{item.name}</p>
+
+                    <div className="btn-group-sm" role="group">
+                      <button 
+                        type="button"
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={()=> navigate(`/detail/${item.id}`, {state: item})}
+                        >
+                          자세히
+                      </button>
+                      <button 
+                        type="button" 
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={confirmDelete}
+                      >
+                        삭제
+                      </button>
+                    </div>
+
+                    
+                    
+                  </div>
+                  
+                  <small className="text-muted">{item.company}</small>
                 </div>
-                <p className="mt-2 fw-bold">{item.name}</p>
-                <small className="text-muted">{item.company}</small>
+                
               </div>
             ))}
           </div>
