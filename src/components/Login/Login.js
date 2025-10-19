@@ -1,10 +1,12 @@
-
-
+import { useNavigate } from 'react-router-dom';
 
 const Login = ()=> {
+    const navigate = useNavigate();
+
     return (
+        
         <>
-            <div className="container">
+            <div className="container justify-content-center">
                 <div>
                     <input placeholder="email"></input>
                 </div>
@@ -12,7 +14,9 @@ const Login = ()=> {
                     <input placeholder="password"></input>
                 </div>
                 <div>
-                    <a href="../" className="btn btn-dark">Submit</a>
+                    <button onClick={() => navigate('/main')}>
+                        Submit
+                    </button>
                 </div>
             </div>
             
