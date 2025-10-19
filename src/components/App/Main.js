@@ -49,8 +49,7 @@ const Main = () => {
                 className="form-control"
               />
               <button className="btn btn-outline-secondary ms-2">
-                {/* <i className="fas fa-search"></i> */}
-                Search
+                 <i className="fas fa-sign-in-alt"></i> Login
               </button>
               <div className="">
                 <button 
