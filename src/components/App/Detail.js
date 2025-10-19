@@ -23,18 +23,56 @@ function Detail() {
 
   return (
     <div className="container mt-4">
-      <button className="btn btn-light mb-3" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
+        <div className="d-flex justify-content-between">
+            <button className="btn btn-light mb-3" onClick={() => navigate(-1)}>
+                ← Back
+            </button>
+            <button 
+                className="btn btn-light mb-3"
+                onClick={()=> navigate(`/edit/${id}`,{state: data})}
+            >
+                Edit
+            </button>
+        </div>
+        <div className="detailPage">
+          <h3 className="detail-title">{data.name}</h3>
+          <div className="mb-3">
+            <label>회사</label>
+            <p className="detail-component">{data.company}</p>
+          </div>
+          <div className="mb-3">
+            <label>id</label>
+            <p className="detail-component">{data.id}</p>
+          </div>
+          <div className="mb-3">
+            <label>추가 날짜</label>
+            <p className="detail-component">{data.addDate}</p>
+          </div>
+          <div className="mb-3">
+            <label>수정 날짜</label>
+            <p className="detail-component">{data.reviseDate}</p>
+          </div>
+          <div className="mb-3">
+            <label>표준 코드</label>
+            <div className="detail-component">
+              <p className="text-wrap" style={{wordBreak: "break-all"}}>{data.stdCode}</p>
+            </div>
+          </div>
+          
+          
+          
+        </div>
+        
+        
 
-      <h3>{data.name}</h3>
-      <small className="text-muted">{data.company}</small>
+        <div 
+            className="ratio ratio-16x9 my-3"
+            style={{maxWidth:"800px"}}
+        >
+            <iframe src={data.videoUrl} title={data.name} allowFullScreen></iframe>
+        </div>
 
-      <div className="ratio ratio-16x9 my-3">
-        <iframe src={data.videoUrl} title={data.name} allowFullScreen></iframe>
-      </div>
-
-      {data.description && <p>{data.description}</p>}
+        
     </div>
   );
 }

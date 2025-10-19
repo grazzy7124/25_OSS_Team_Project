@@ -23,6 +23,10 @@ const Main = () => {
       });
   }, []);
 
+  const confirmDelete = ()=> {
+    alert('정말 삭제하시겠습니까?');
+  }
+
   const filtered = medicines.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -49,7 +53,12 @@ const Main = () => {
                 Search
               </button>
               <div className="">
-                <button className="btn btn-outline-secondary ms-2">Add</button>
+                <button 
+                  className="btn btn-outline-secondary ms-2"
+                  onClick={()=>navigate('/add', {state:item})}
+                >
+                  Add
+                </button>
               </div>
             </div>
           </div>
@@ -60,24 +69,41 @@ const Main = () => {
                 key={item.id}
                 className="col-12 col-md-6 col-lg-3 mb-4"
               >
-                <div className="ratio ratio-16x9">
-                  <iframe
-                    src={item.videoUrl}
-                    title={item.name}
-                    allowFullScreen
-                  ></iframe>
-                </div >
-                <div className="d-flex justify-content-between">
-                  <p className="mt-2 fw-bold">{item.name}</p>
-                  <button 
-                  className="btn btn-outline-secondary btn-sm"
-                  onClick={()=> navigate(`/detail/${item.id}`, {state: item})}
-                  >
-                    detail
-                  </button>
+                <div className="component">
+                  <div className="ratio ratio-16x9">
+                    <iframe
+                      src={item.videoUrl}
+                      title={item.name}
+                      allowFullScreen
+                    ></iframe>
+                  </div >
+                  <div className="d-flex justify-content-between">
+                    <p className="mt-2 fw-bold">{item.name}</p>
+
+                    <div className="btn-group-sm" role="group">
+                      <button 
+                        type="button"
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={()=> navigate(`/detail/${item.id}`, {state: item})}
+                        >
+                          자세히
+                      </button>
+                      <button 
+                        type="button" 
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={confirmDelete}
+                      >
+                        삭제
+                      </button>
+                    </div>
+
+                    
+                    
+                  </div>
+                  
+                  <small className="text-muted">{item.company}</small>
                 </div>
                 
-                <small className="text-muted">{item.company}</small>
               </div>
             ))}
           </div>
