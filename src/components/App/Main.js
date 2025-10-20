@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import iyagiLogo from "../../image/iyagi-logo.png";
 
 const Main = () => {
   const [medicines, setMedicines] = useState([]);
@@ -48,7 +49,16 @@ const Main = () => {
         <div className="">
           <div className="row">
             <div className="col-3">
-              <h1>이약이</h1>
+              <img
+                src={iyagiLogo}
+                alt="이약이 로고"
+                style={{
+                  width: "160px",
+                  height: "auto",
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/")} 
+              />
             </div>
             <div className="col-9 d-flex">
               <input
