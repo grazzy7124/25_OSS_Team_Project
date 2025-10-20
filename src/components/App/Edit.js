@@ -70,6 +70,8 @@ export default function Edit() {
       const payload = { ...form, reviseDate: today };
 
       await axios.put(`${API_URL}/${id}`, payload);
+      alert("수정이 완료되었습니다!");
+
       // 저장 후 상세로 이동 (state도 넘겨서 즉시 반영되게)
       navigate(`/detail/${id}`, { replace: true, state: payload });
     } catch (e) {
