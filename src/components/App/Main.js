@@ -48,7 +48,7 @@ const Main = () => {
         <div className="">
           <div className="row">
             <div className="col-3">
-              <p>장애인 의약품 안전사용 정보(음성, 수어 영상)</p>
+              <h1>이약이</h1>
             </div>
             <div className="col-9 d-flex">
               <input
