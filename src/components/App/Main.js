@@ -23,9 +23,18 @@ const Main = () => {
       });
   }, []);
 
-  const confirmDelete = ()=> {
-    alert('정말 삭제하시겠습니까?');
-  }
+  const confirmDelete = async (id) => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      try {
+        await axios.delete(`${API_URL}/${id}`);
+        setMedicines((prev) => prev.filter((item) => item.id !== id));
+        alert("삭제되었습니다 !");
+      } catch (err) {
+        console.error("삭제 실패:", err);
+        alert("오류가 발생했습니다.");
+      }
+    }
+  };
 
   const filtered = medicines.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
@@ -90,9 +99,9 @@ const Main = () => {
                       <button 
                         type="button" 
                         className="btn btn-outline-secondary btn-sm"
-                        onClick={confirmDelete}
-                      >
-                        삭제
+                        onClick={() => confirmDelete(item.id)}
+                        >
+                          삭제
                       </button>
                     </div>
 
@@ -113,4 +122,7 @@ const Main = () => {
 };
 
 export default Main;
+
+
+
 
