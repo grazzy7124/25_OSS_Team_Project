@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import iyagiLogo from "../../image/iyagi-logo.png";
+import "../../css/Main.css";
 
 const Main = () => {
   const [medicines, setMedicines] = useState([]);
