@@ -1,0 +1,176 @@
+/* ───────────────────────────────
+   전체 레이아웃
+─────────────────────────────── */
+.container {
+  padding: 2rem 0 3rem;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f9fafc;
+  color: #333;
+}
+
+/* ───────────────────────────────
+   헤더 (로고 + 검색 + 버튼)
+─────────────────────────────── */
+.row.align-items-center {
+  border-bottom: 1px solid #e6e6e6;
+  padding-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.col-3 img {
+  width: 160px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.col-3 img:hover {
+  transform: scale(1.05);
+}
+
+/* ───────────────────────────────
+   검색창 + 버튼
+─────────────────────────────── */
+.form-control {
+  border-radius: 25px;
+  border: 1.5px solid #d0d7e2;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  padding: 0.6rem 1rem;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #7bbff9;
+  box-shadow: 0 0 0 3px rgba(123, 191, 249, 0.15);
+}
+
+/* 버튼 (Login, Add 등) */
+.btn-outline-secondary {
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #5c6f82;
+  border-color: #cfd7e2;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #a2d2ff;
+  color: white;
+  border-color: #7bbff9;
+}
+
+/* ───────────────────────────────
+   카드 (동영상)
+─────────────────────────────── */
+.component {
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.component:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* ───────────────────────────────
+   영상 영역 (YouTube 스타일)
+─────────────────────────────── */
+.ratio {
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f0f4f9;
+  border: 1px solid #e4e8ee;
+}
+
+iframe {
+  border: none;
+}
+
+/* ───────────────────────────────
+   텍스트 영역
+─────────────────────────────── */
+.fw-bold {
+  font-size: 1rem;
+  color: #2b2b2b;
+  margin-top: 0.3rem;
+}
+
+.text-muted {
+  font-size: 0.85rem;
+  color: #808ea0 !important;
+}
+
+/* ───────────────────────────────
+   버튼 그룹 (자세히 / 삭제)
+─────────────────────────────── */
+.btn-group-sm .btn {
+  border-radius: 8px;
+  padding: 3px 8px;
+}
+
+.btn-group-sm .btn-outline-secondary {
+  color: #5c6f82;
+  border-color: #d0d7e2;
+}
+
+.btn-group-sm .btn-outline-secondary:hover {
+  background-color: #ffb3c6;
+  color: white;
+  border-color: #ff9eb4;
+}
+
+/* ───────────────────────────────
+   반응형
+─────────────────────────────── */
+@media (max-width: 768px) {
+  .row.align-items-center {
+    flex-direction: column;
+    text-align: center;
+  }
+  .col-3 img {
+    margin-bottom: 1rem;
+  }
+  .btn-outline-secondary {
+    font-size: 13px;
+  }
+}
+
+/* ───────────────────────────────
+   색상 팔레트 참고
+─────────────────────────────── */
+/*
+하늘색 (메인): #a2d2ff
+연핑크 (포인트): #ffc8dd
+민트 (보조): #bde0fe
+회색 (텍스트): #5c6f82
+배경 (기본): #f9fafc
+*/
+
+/* 로고 이미지 스타일 */
+.col-3 img {
+  width: 260px;           
+  height: auto;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.08)); 
+  transition: all 0.3s ease;
+}
+
+/* hover 시 부드럽게 확대 */
+.col-3 img:hover {
+  transform: scale(1.03);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+/* 밝고 선명하게 보이도록 보정 */
+@media (prefers-color-scheme: light) {
+  .col-3 img {
+    filter: brightness(1.05) contrast(1.05) saturate(1.15)
+            drop-shadow(0 2px 3px rgba(0, 0, 0, 0.08));
+  }
+}
+
