@@ -1,101 +1,75 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Button, Card, Form, Container } from "react-bootstrap";
 import iyagiLogo from "../../image/iyagi-logo.png";
 import "../../css/Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email.trim()) return setError("이메일을 입력해주세요.");
-    if (!validateEmail(email)) return setError("올바른 이메일 형식이 아닙니다.");
-    if (!password.trim()) return setError("비밀번호를 입력해주세요.");
-    if (password.length < 6) return setError("비밀번호는 6자 이상이어야 합니다.");
-
+  const onSubmit = (data) => {
+    // 로그인 성공 처리
     localStorage.setItem("auth", "true");
-    alert("로그인되었습니다!");
+    alert(`${data.email}님, 로그인되었습니다!`);
     navigate("/main");
   };
 
   return (
-    <div
-      className="login-container"
-      role="region"
-      aria-label="로그인 화면"
-      aria-live="polite"
+    <Container
+      className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: "100vh" }}
     >
-      <div className="login-box" role="form" aria-labelledby="login-title">
-        <img
-          src={iyagiLogo}
-          alt="이약이 로고"
-          className="login-logo"
-          onClick={() => navigate("/")}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && navigate("/")}
-          aria-label="홈으로 이동"
-        />
+      <Card style={{ width: "400px" }} className="shadow-lg p-4">
+        <div className="text-center mb-3">
+          <img src={iyagiLogo} alt="이약이 로고" style={{ width: "150px" }} />
+          <h4 className="mt-3">로그인</h4>
+        </div>
 
-        <h2 id="login-title" className="login-title" tabIndex={0}>
-          로그인
-        </h2>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form.Group className="mb-3">
+            <Form.Label>이메일</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="이메일을 입력하세요"
+              {...register("email", {
+                required: "이메일은 필수입니다.",
+                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              })}
+              isInvalid={!!errors.email}
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.email?.message}
+            </Form.Control.Feedback>
+          </Form.Group>
 
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="email-input" className="visually-hidden">
-            이메일
-          </label>
-          <input
-            id="email-input"
-            type="email"
-            className="login-input"
-            placeholder="이메일"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            aria-label="이메일 입력"
-          />
+          <Form.Group className="mb-4">
+            <Form.Label>비밀번호</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+              {...register("password", {
+                required: "비밀번호는 필수입니다.",
+                minLength: { value: 6, message: "6자 이상 입력해주세요." },
+              })}
+              isInvalid={!!errors.password}
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.password?.message}
+            </Form.Control.Feedback>
+          </Form.Group>
 
-          <label htmlFor="password-input" className="visually-hidden">
-            비밀번호
-          </label>
-          <input
-            id="password-input"
-            type="password"
-            className="login-input"
-            placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            aria-label="비밀번호 입력"
-          />
-
-          {error && (
-            <div
-              className="login-error"
-              role="alert"
-              aria-live="assertive"
-              tabIndex={0}
-            >
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="login-button"
-            aria-label="로그인 버튼"
-          >
+          <Button type="submit" className="w-100" variant="primary">
             로그인
-          </button>
-        </form>
-      </div>
-    </div>
+          </Button>
+        </Form>
+      </Card>
+    </Container>
   );
 };
 
