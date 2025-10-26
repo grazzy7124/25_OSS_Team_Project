@@ -18,13 +18,11 @@ const Main = () => {
   const PHARM_API_URL =
     "https://apis.data.go.kr/B552657/ErmctInsttInfoInqireService/getParmacyLcinfoInqire";
 
-  // ✅ 로그인 상태 확인
   useEffect(() => {
     const auth = localStorage.getItem("auth");
     setIsLoggedIn(auth === "true");
   }, []);
 
-  // ✅ 의약품 데이터 불러오기
   useEffect(() => {
     axios
       .get(API_URL)
@@ -38,7 +36,7 @@ const Main = () => {
       });
   }, []);
 
-  // ✅ 삭제 기능 (추가됨)
+  // ✅ 삭제 기능
   const confirmDelete = async (id) => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
@@ -52,7 +50,6 @@ const Main = () => {
     }
   };
 
-  // ✅ 사용자 위치 가져오기
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -71,7 +68,6 @@ const Main = () => {
     }
   }, []);
 
-  // ✅ 약국 데이터 불러오기
   useEffect(() => {
     if (!userLocation) return;
 
@@ -99,60 +95,8 @@ const Main = () => {
     fetchPharmacies();
   }, [userLocation]);
 
-  useEffect(() => {
-  if (pharmacies.length === 0 || !userLocation) return;
-
-  const script = document.createElement("script");
-  script.src =
-    "//dapi.kakao.com/v2/maps/sdk.js?appkey=df30be808a45975c511ab5a46cf9765b&autoload=false";
-  script.async = true;
-  document.head.appendChild(script);
-
-  script.onload = () => {
-    window.kakao.maps.load(() => {
-      const container = document.getElementById("map");
-      if (!container) return;
-
-      const map = new window.kakao.maps.Map(container, {
-        center: new window.kakao.maps.LatLng(
-          userLocation.latitude,
-          userLocation.longitude
-        ),
-        level: 5,
-      });
-
-      const marker = new window.kakao.maps.Marker({
-        position: new window.kakao.maps.LatLng(
-          userLocation.latitude,
-          userLocation.longitude
-        ),
-        map,
-      });
-
-      pharmacies.forEach((p) => {
-        if (p.wgs84Lat && p.wgs84Lon) {
-          const marker = new window.kakao.maps.Marker({
-            position: new window.kakao.maps.LatLng(p.wgs84Lat, p.wgs84Lon),
-            map,
-          });
-
-          const infowindow = new window.kakao.maps.InfoWindow({
-            content: `<div style="font-size:13px; padding:4px;">${p.dutyName}</div>`,
-          });
-
-          window.kakao.maps.event.addListener(marker, "click", () => {
-            infowindow.open(map, marker);
-          });
-        }
-      });
-    });
-  };
-}, [pharmacies, userLocation]);
-
-
   if (loading) return <p>불러오는 중...</p>;
 
-  // ✅ 검색 & 정렬
   const filtered = medicines.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -259,18 +203,15 @@ const Main = () => {
         ))}
       </div>
 
-      {/* ✅ 내 주변 약국 정보 */}
       <div className="row mt-5">
         <h4>📍 내 주변 약국</h4>
-        <div id="map" style={{ width: "100%", height: "400px", borderRadius: "12px" }}></div>
-
         {pharmacies.length === 0 ? (
           <p className="mt-3">주변 약국 정보를 불러오는 중입니다...</p>
         ) : (
           <ul className="mt-3">
             {pharmacies.map((p, idx) => (
-              <li key={idx} style={{ marginBottom: "8px" }}>
-                <strong>{p.dutyName}</strong>  
+              <li key={idx} style={{ marginBottom: "10px" }}>
+                <strong>{p.dutyName}</strong>
                 <br />
                 {p.dutyAddr}
                 <br />
