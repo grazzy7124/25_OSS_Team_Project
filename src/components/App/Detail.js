@@ -3,6 +3,7 @@ import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import onePic from "../../image/pic.png"; 
+import "../../css/Detail.css";
 
 const API_URL = "https://68db33b023ebc87faa324066.mockapi.io/OSS_teamproject";
 
@@ -147,7 +148,7 @@ function Detail() {
             }}
           />
           <p className="text-muted mt-2" aria-label="이미지 설명 텍스트">
-            {data.imageUrl ? "등록된 제품 이미지" : "기본 이미지가 표시됩니다."}
+            {data.imageUrl ? "등록된 제품 이미지." : "이미지 준비중입니다."}
           </p>
         </div>
 

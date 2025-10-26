@@ -1,0 +1,45 @@
+.container {
+  background-color: #fff;
+  font-family: 'Noto Sans KR', sans-serif;
+  padding: 2rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #222;
+}
+
+.form-control {
+  border-radius: 20px;
+  border: 2px solid #ccc;
+  padding: 0.8rem;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+.form-control:focus {
+  border-color: #a2d2ff;
+  outline: 3px solid rgba(162, 210, 255, 0.3);
+}
+
+.btn-primary {
+  background-color: #a2d2ff;
+  border: none;
+  color: #fff;
+  border-radius: 40px;
+  padding: 0.8rem 1.5rem;
+  font-weight: 600;
+}
+.btn-primary:hover {
+  background-color: #90c8ff;
+}
+
+.btn-outline-secondary {
+  border: 2px solid #a2d2ff;
+  border-radius: 40px;
+  color: #0056a1;
+  padding: 0.8rem 1.5rem;
+}
+.btn-outline-secondary:hover {
+  background-color: #a2d2ff;
+  color: white;
+}
