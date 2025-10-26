@@ -8,19 +8,23 @@ const Main = () => {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState("name"); // ✅ 정렬 상태
+  const [sortBy, setSortBy] = useState("name");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
+  const [pharmacies, setPharmacies] = useState([]);
+
   const navigate = useNavigate();
-
   const API_URL = "https://68db33b023ebc87faa324066.mockapi.io/OSS_teamproject";
+  const PHARM_API_URL =
+    "https://apis.data.go.kr/B552657/ErmctInsttInfoInqireService/getParmacyLcinfoInqire";
 
-  // 로그인 상태 확인
+  // ✅ 로그인 상태 확인
   useEffect(() => {
     const auth = localStorage.getItem("auth");
     setIsLoggedIn(auth === "true");
   }, []);
 
-  // API 데이터 불러오기
+  // ✅ 의약품 데이터 불러오기
   useEffect(() => {
     axios
       .get(API_URL)
@@ -34,7 +38,7 @@ const Main = () => {
       });
   }, []);
 
-  // 삭제 기능
+  // ✅ 삭제 기능 (추가됨)
   const confirmDelete = async (id) => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
@@ -48,20 +52,116 @@ const Main = () => {
     }
   };
 
-  // 검색 필터
+  // ✅ 사용자 위치 가져오기
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          setUserLocation({ latitude, longitude });
+        },
+        (err) => {
+          console.error("위치 정보 불러오기 실패:", err);
+          setUserLocation({ latitude: 37.5665, longitude: 126.9780 }); // 서울시청 기본값
+        }
+      );
+    } else {
+      alert("위치 정보를 지원하지 않는 브라우저입니다.");
+      setUserLocation({ latitude: 37.5665, longitude: 126.9780 });
+    }
+  }, []);
+
+  // ✅ 약국 데이터 불러오기
+  useEffect(() => {
+    if (!userLocation) return;
+
+    const fetchPharmacies = async () => {
+      try {
+        const res = await axios.get(PHARM_API_URL, {
+          params: {
+            ServiceKey:
+              "0e970572f043cbb40c9de5754ee7542f4cf1e423bcfc9cd5857bb496befb4a10",
+            WGS84_LON: userLocation.longitude,
+            WGS84_LAT: userLocation.latitude,
+            numOfRows: 10,
+            pageNo: 1,
+            _type: "json",
+          },
+        });
+
+        const items = res.data?.response?.body?.items?.item || [];
+        setPharmacies(items);
+      } catch (err) {
+        console.error("약국 정보 요청 실패:", err);
+      }
+    };
+
+    fetchPharmacies();
+  }, [userLocation]);
+
+  useEffect(() => {
+  if (pharmacies.length === 0 || !userLocation) return;
+
+  const script = document.createElement("script");
+  script.src =
+    "//dapi.kakao.com/v2/maps/sdk.js?appkey=df30be808a45975c511ab5a46cf9765b&autoload=false";
+  script.async = true;
+  document.head.appendChild(script);
+
+  script.onload = () => {
+    window.kakao.maps.load(() => {
+      const container = document.getElementById("map");
+      if (!container) return;
+
+      const map = new window.kakao.maps.Map(container, {
+        center: new window.kakao.maps.LatLng(
+          userLocation.latitude,
+          userLocation.longitude
+        ),
+        level: 5,
+      });
+
+      const marker = new window.kakao.maps.Marker({
+        position: new window.kakao.maps.LatLng(
+          userLocation.latitude,
+          userLocation.longitude
+        ),
+        map,
+      });
+
+      pharmacies.forEach((p) => {
+        if (p.wgs84Lat && p.wgs84Lon) {
+          const marker = new window.kakao.maps.Marker({
+            position: new window.kakao.maps.LatLng(p.wgs84Lat, p.wgs84Lon),
+            map,
+          });
+
+          const infowindow = new window.kakao.maps.InfoWindow({
+            content: `<div style="font-size:13px; padding:4px;">${p.dutyName}</div>`,
+          });
+
+          window.kakao.maps.event.addListener(marker, "click", () => {
+            infowindow.open(map, marker);
+          });
+        }
+      });
+    });
+  };
+}, [pharmacies, userLocation]);
+
+
+  if (loading) return <p>불러오는 중...</p>;
+
+  // ✅ 검색 & 정렬
   const filtered = medicines.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
-
-  // ✅ 정렬 로직
   const sorted = [...filtered].sort((a, b) => {
     if (sortBy === "name") return a.name.localeCompare(b.name, "ko");
     if (sortBy === "company") return a.company.localeCompare(b.company, "ko");
     if (sortBy === "addDate") return (a.addDate || "").localeCompare(b.addDate || "");
     return 0;
   });
-
-  if (loading) return <p>불러오는 중...</p>;
 
   return (
     <div className="container">
@@ -70,50 +170,34 @@ const Main = () => {
         <div className="col-3">
           <img
             src={iyagiLogo}
-            alt="이약이 로고 (홈으로 이동)"
-            tabIndex={0}
-            style={{ width: "200px", height: "auto", cursor: "pointer" }}
+            alt="이약이 로고"
+            style={{ width: "200px", cursor: "pointer" }}
             onClick={() => navigate("/")}
-            onKeyDown={(e) => e.key === "Enter" && navigate("/")}
           />
         </div>
 
         <div className="col-9 d-flex align-items-center justify-content-end">
-          {/* 검색창 */}
           <input
             placeholder="검색"
-            aria-label="의약품 검색 입력창"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="form-control me-2"
             style={{ maxWidth: "250px" }}
           />
-
-          {/* ✅ 정렬 선택 */}
           <select
-            aria-label="정렬 기준 선택"
-            className="form-select me-2"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            style={{
-              width: "140px",
-              borderRadius: "25px",
-              border: "1.5px solid #a2d2ff",
-              backgroundColor: "#f8fbff",
-              fontSize: "14px",
-              padding: "0.45rem 0.6rem",
-            }}
+            className="form-select me-2"
+            style={{ width: "140px" }}
           >
             <option value="name">이름순</option>
             <option value="company">회사순</option>
             <option value="addDate">추가날짜순</option>
           </select>
 
-          {/* 로그인 / 로그아웃 */}
           {isLoggedIn ? (
             <button
               className="btn btn-outline-secondary me-2"
-              aria-label="로그아웃"
               onClick={() => {
                 localStorage.setItem("auth", "false");
                 setIsLoggedIn(false);
@@ -124,19 +208,16 @@ const Main = () => {
           ) : (
             <button
               className="btn btn-outline-secondary me-2"
-              aria-label="로그인 페이지로 이동"
               onClick={() => navigate("/login")}
             >
               Login
             </button>
           )}
 
-          {/* 로그인 상태일 때만 Add 표시 */}
           {isLoggedIn && (
             <button
               className="btn btn-outline-secondary"
               onClick={() => navigate("/add")}
-              aria-label="새 약 정보 추가 페이지로 이동"
             >
               Add
             </button>
@@ -147,57 +228,57 @@ const Main = () => {
       {/* 약 목록 */}
       <div className="row mt-4">
         {sorted.map((item) => (
-          <div
-            key={item.id}
-            className="col-12 col-md-6 col-lg-3 mb-4"
-            role="region"
-            aria-label={`${item.name} 약 정보 카드`}
-          >
+          <div key={item.id} className="col-12 col-md-6 col-lg-3 mb-4">
             <div className="component">
               <div className="ratio ratio-16x9">
-                <iframe
-                  src={item.videoUrl}
-                  title={`${item.name} 영상`}
-                  allowFullScreen
-                ></iframe>
+                <iframe src={item.videoUrl} title={item.name} allowFullScreen></iframe>
               </div>
 
               <div className="d-flex justify-content-between align-items-center mt-2">
-                <p className="fw-bold" aria-label={`제품명: ${item.name}`}>
-                  {item.name}
-                </p>
-
-                <div className="btn-group-sm" role="group">
+                <p className="fw-bold">{item.name}</p>
+                <div className="btn-group-sm">
                   <button
-                    type="button"
                     className="btn btn-outline-secondary btn-sm"
-                    onClick={() =>
-                      navigate(`/detail/${item.id}`, { state: item })
-                    }
-                    aria-label={`${item.name} 자세히 보기`}
+                    onClick={() => navigate(`/detail/${item.id}`, { state: item })}
                   >
                     자세히
                   </button>
-
                   {isLoggedIn && (
                     <button
-                      type="button"
                       className="btn btn-outline-secondary btn-sm"
                       onClick={() => confirmDelete(item.id)}
-                      aria-label={`${item.name} 삭제하기`}
                     >
                       삭제
                     </button>
                   )}
                 </div>
               </div>
-
-              <small className="text-muted" aria-label={`제조사: ${item.company}`}>
-                {item.company}
-              </small>
+              <small className="text-muted">{item.company}</small>
             </div>
           </div>
         ))}
+      </div>
+
+      {/* ✅ 내 주변 약국 정보 */}
+      <div className="row mt-5">
+        <h4>📍 내 주변 약국</h4>
+        <div id="map" style={{ width: "100%", height: "400px", borderRadius: "12px" }}></div>
+
+        {pharmacies.length === 0 ? (
+          <p className="mt-3">주변 약국 정보를 불러오는 중입니다...</p>
+        ) : (
+          <ul className="mt-3">
+            {pharmacies.map((p, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <strong>{p.dutyName}</strong>  
+                <br />
+                {p.dutyAddr}
+                <br />
+                ☎ {p.dutyTel1}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
