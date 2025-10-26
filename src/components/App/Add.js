@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import "../../css/Add.css";
 
 const API_URL = "https://68db33b023ebc87faa324066.mockapi.io/OSS_teamproject";
 
